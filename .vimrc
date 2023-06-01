@@ -24,9 +24,6 @@ set number
 " Show file stats
 set ruler
 
-" Blink cursor on error instead of beeping (grr)
-set visualbell
-
 " Encoding
 set encoding=utf-8
 
@@ -34,17 +31,27 @@ set encoding=utf-8
 set noswapfile
 set noundofile
 set nobackup
+" set tabs to have 4 spaces
+set ts=4
 
-" Whitespace
-set wrap
-set textwidth=80
-set tabstop=8
-set shiftwidth=8
-set softtabstop=8
+" indent when moving to the next line while writing code
+set autoindent
+
+" expand tabs into spaces
 set expandtab
-set noshiftround
+
+" when using the >> or << commands, shift lines by 4 spaces
+set shiftwidth=4
+
+" Python formatting specifics
+set tabstop=8
+set softtabstop=4
+filetype indent on
 
 " Cursor motion
 set scrolloff=3
 set backspace=indent,eol,start
 set matchpairs+=<:> " use % to jump between pairs
+
+# unix line endings
+set ff=unix
