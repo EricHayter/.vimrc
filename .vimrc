@@ -12,8 +12,8 @@ syntax on
 " For plugins to load correctly
 filetype plugin indent on
 
-" TODO: Pick a leader key
-" let mapleader = ","
+nnoremap <SPACE> <Nop>
+let mapleader = " "
 
 " Security
 set modelines=0
@@ -53,5 +53,8 @@ set scrolloff=3
 set backspace=indent,eol,start
 set matchpairs+=<:> " use % to jump between pairs
 
-# unix line endings
-set ff=unix
+" Netrw
+nnoremap <leader>dd :Lexplore %:p:h<CR>
+nnoremap <Leader>da :Lexplore<CR>
+let g:netrw_liststyle=3
+let g:netrw_banner=0
