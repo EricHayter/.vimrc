@@ -1,15 +1,4 @@
-" Don't try to be vi compatible
 set nocompatible
-
-" Helps force plugins to load correctly when it is turned back on below
-filetype off
-
-" TODO: Load plugins here (pathogen or vundle)
-
-" Turn on syntax highlighting
-syntax on
-
-" For plugins to load correctly
 filetype plugin indent on
 
 nnoremap <SPACE> <Nop>
@@ -31,30 +20,58 @@ set encoding=utf-8
 set noswapfile
 set noundofile
 set nobackup
-" set tabs to have 4 spaces
+
+" formatting
 set ts=4
-
-" indent when moving to the next line while writing code
-set autoindent
-
-" expand tabs into spaces
-set expandtab
-
-" when using the >> or << commands, shift lines by 4 spaces
 set shiftwidth=4
-
-" Python formatting specifics
-set tabstop=8
-set softtabstop=4
-filetype indent on
+set autoindent
+set expandtab
 
 " Cursor motion
 set scrolloff=3
 set backspace=indent,eol,start
 set matchpairs+=<:> " use % to jump between pairs
+set cursorline
+set ttyfast
 
 " Netrw
 nnoremap <leader>dd :Lexplore %:p:h<CR>
 nnoremap <Leader>da :Lexplore<CR>
 let g:netrw_liststyle=3
 let g:netrw_banner=0
+
+set hlsearch
+set showmatch
+set ignorecase
+
+set cc=80
+
+colorscheme darcula
+
+" vim-plug
+call plug#begin()
+    Plug 'dense-analysis/ale'
+call plug#end()
+
+" ALE config
+let g:ale_completion_enabled = 1
+let g:ale_fix_on_save = 1
+let g:ale_hover_cursor = 1
+let g:ale_set_balloons = 1
+
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<C-n>" : "\<TAB>"
+
+nnoremap <silent> gd :ALEGoToDefinition <CR>
+nnoremap <silent> <F2> :ALERename <CR>
+
+"pylsp
+let g:ale_linters = {
+\   'python': ['pylsp', 'pylint', 'mypy'],
+\}
+
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'python': ['autopep8'],
+\}
+let g:ale_python_autopep8_options = '--aggressive'
