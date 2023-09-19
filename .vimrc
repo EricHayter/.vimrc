@@ -25,7 +25,7 @@ set nobackup
 set ts=4
 set shiftwidth=4
 set autoindent
-set expandtab
+set noexpandtab
 
 " Cursor motion
 set scrolloff=3
@@ -46,7 +46,7 @@ set ignorecase
 
 set cc=80
 
-colorscheme darcula
+colorscheme jellybeans
 
 " vim-plug
 call plug#begin()
@@ -68,6 +68,7 @@ nnoremap <silent> <F2> :ALERename <CR>
 "pylsp
 let g:ale_linters = {
 \   'python': ['pylsp', 'pylint', 'mypy'],
+\   'cpp': ['clangd'],
 \}
 
 let g:ale_fixers = {
@@ -75,3 +76,9 @@ let g:ale_fixers = {
 \   'python': ['autopep8'],
 \}
 let g:ale_python_autopep8_options = '--aggressive'
+" Let clangd fully control code completion
+let g:ycm_clangd_uses_ycmd_caching = 0
+" Use installed clangd, not YCM-bundled clangd which doesn't get updates.
+let g:ycm_clangd_binary_path = exepath("clangd")
+let g:ale_cpp_clangd_options = "-std=c++20 -pedantic-errors -ggdb -Wall -Weffc++ -Wextra -Wconversion -Wsign-conversion"
+let g:ale_cpp_clangd_options = ""
