@@ -1,16 +1,16 @@
+set number
+set ruler
+colorscheme habamax
+
 set nocompatible
 filetype plugin indent on
 
 nnoremap <SPACE> <Nop>
 let mapleader = " "
 
-" Security
 set modelines=0
 
-" Show line numbers
 set number
-
-" Show file stats
 set ruler
 
 " Encoding
@@ -22,10 +22,13 @@ set noundofile
 set nobackup
 
 " formatting
-set ts=4
+set tabstop=4
 set shiftwidth=4
-set autoindent
-set noexpandtab
+set expandtab
+
+" auto completion
+set wildmenu
+set hidden
 
 " Cursor motion
 set scrolloff=3
@@ -33,6 +36,11 @@ set backspace=indent,eol,start
 set matchpairs+=<:> " use % to jump between pairs
 set cursorline
 set ttyfast
+
+set spell
+set is
+set ignorecase
+set smartcase
 
 " Netrw
 nnoremap <leader>dd :Lexplore %:p:h<CR>
@@ -44,41 +52,29 @@ set hlsearch
 set showmatch
 set ignorecase
 
+" max line length
 set cc=80
-
-colorscheme jellybeans
 
 " vim-plug
 call plug#begin()
-    Plug 'dense-analysis/ale'
+
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+
 call plug#end()
 
-" ALE config
-let g:ale_completion_enabled = 1
-let g:ale_fix_on_save = 1
-let g:ale_hover_cursor = 1
-let g:ale_set_balloons = 1
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    nmap <buffer> gi <plug>(lsp-definition)
+    nmap <buffer> gd <plug>(lsp-declaration)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gl <plug>(lsp-document-diagnostics)
+    nmap <buffer> <f2> <plug>(lsp-rename)
+    nmap <buffer> <f3> <plug>(lsp-hover)
+endfunction
 
-inoremap <silent><expr> <Tab>
-      \ pumvisible() ? "\<C-n>" : "\<TAB>"
-
-nnoremap <silent> gd :ALEGoToDefinition <CR>
-nnoremap <silent> <F2> :ALERename <CR>
-
-"pylsp
-let g:ale_linters = {
-\   'python': ['pylsp', 'pylint', 'mypy'],
-\   'cpp': ['clangd'],
-\}
-
-let g:ale_fixers = {
-\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'python': ['autopep8'],
-\}
-let g:ale_python_autopep8_options = '--aggressive'
-" Let clangd fully control code completion
-let g:ycm_clangd_uses_ycmd_caching = 0
-" Use installed clangd, not YCM-bundled clangd which doesn't get updates.
-let g:ycm_clangd_binary_path = exepath("clangd")
-let g:ale_cpp_clangd_options = "-std=c++20 -pedantic-errors -ggdb -Wall -Weffc++ -Wextra -Wconversion -Wsign-conversion"
-let g:ale_cpp_clangd_options = ""
+augroup lsp_install
+    au!
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
