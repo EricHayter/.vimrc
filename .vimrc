@@ -1,96 +1,79 @@
 set number
-set ruler
-colorscheme molokai
-
-set nocompatible
-filetype plugin indent on
-
-nnoremap <SPACE> <Nop>
-let mapleader = " "
-
-set modelines=0
-
-set number
-set ruler
-
-" Encoding
-set encoding=utf-8
-
-" preventing file creation
 set noswapfile
-set noundofile
-set nobackup
 
-" formatting
+color iceberg
+set background=light
+
+syntax on
+
+filetype plugin indent on
 set tabstop=4
 set shiftwidth=4
-set expandtab
 
-" auto completion
 set wildmenu
 set hidden
 
-" Cursor motion
-set scrolloff=3
-set backspace=indent,eol,start
-set matchpairs+=<:> " use % to jump between pairs
+set wildignore=*.exe,*.dll,*.pdb
+
+set guifont=Cascadia_Mono:h24
+
+set guioptions-=m
+set guioptions-=T
+set guioptions-=r
+
 set cursorline
-set ttyfast
 
-set spell
-set is
-set ignorecase
-set smartcase
+function InitLspPlugins()
+	call plug#begin('~/vimplugins')
 
-" Netrw
-nnoremap <leader>dd :Lexplore %:p:h<CR>
-nnoremap <Leader>da :Lexplore<CR>
-let g:netrw_liststyle=3
-let g:netrw_banner=0
+	Plug 'prabirshrestha/asyncomplete.vim'
+	Plug 'prabirshrestha/vim-lsp'
+	Plug 'prabirshrestha/asyncomplete-lsp.vim'
+	Plug 'mattn/vim-lsp-settings'
 
-set hlsearch
-set showmatch
-set ignorecase
+	call plug#end()
+endfunction
 
-" vim-plug
-call plug#begin()
+" If you want just a simple Vim config with no plugins, just comment the
+" following line
+call InitLspPlugins()
 
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" By default I want no LSP, sometimes when needed, I can simply call StartLsp
+" to start it
+"
+"
+imap <c-space> <Plug>(asyncomplete_force_refresh)
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>\<cr>" : "\<cr>"
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
-call plug#end()
-
-function! s:on_lsp_buffer_enabled() abort
+"
+"
+function! OnLspBufferEnabled() abort
     setlocal omnifunc=lsp#complete
     setlocal signcolumn=yes
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-    nmap <buffer> gd <plug>(lsp-definition)
-    nmap <buffer> gs <plug>(lsp-document-symbol-search)
-    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    nmap <buffer> gi <plug>(lsp-definition)
+    nmap <buffer> gd <plug>(lsp-declaration)
     nmap <buffer> gr <plug>(lsp-references)
-    nmap <buffer> gi <plug>(lsp-implementation)
-    nmap <buffer> gt <plug>(lsp-type-definition)
-    nmap <buffer> <leader>rn <plug>(lsp-rename)
-    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-    nmap <buffer> K <plug>(lsp-hover)
-    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
-
-    let g:lsp_format_sync_timeout = 1000
+    nmap <buffer> gl <plug>(lsp-document-diagnostics)
+    nmap <buffer> <f2> <plug>(lsp-rename)
+    nmap <buffer> <f3> <plug>(lsp-hover)
 endfunction
 
 augroup lsp_install
-    au!
-    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+  au!
+  autocmd User lsp_buffer_enabled call OnLspBufferEnabled()
 augroup END
 
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+set spell
 
-" Scheme file running script
-command RunRacket !echo | racket %
-nnoremap <F5> :RunRacket<CR>
+set is
+
+set ignorecase
+set smartcase
+
+set gp=git\ grep\ -n
+set ruler
+
+packadd! matchit
